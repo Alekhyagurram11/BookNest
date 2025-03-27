@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% block content %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #f8f8f8;
+        }
+        h1 {
+            color: #333;
+        }
+        input {
+            width: 60%;
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            font-size: 16px;
+        }
+        .category-btn {
+            background-color: #28a745;
+        }
+        .book-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .book-card {
+            width: 200px;
+            background: white;
+            margin: 15px;
+            padding: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        a{
+            text-decoration: none;
+            color: #333;
+        }
+    </style>
+
+
+
+    <h1>Search for Books</h1>
+    <input type="text" id="search" placeholder="Enter book title or author">
+    <button onclick="fetchBooks()">Search</button>
+
+    <h2>Categories</h2>
+    <button class="category-btn" onclick="fetchCategory('fiction')">Fiction</button>
+    <button class="category-btn" onclick="fetchCategory('science')">Science</button>
+    <button class="category-btn" onclick="fetchCategory('history')">History</button>
+    <button class="category-btn" onclick="fetchCategory('technology')">Technology</button>
+    <button class="category-btn" onclick="fetchCategory('mystery')">Mystery</button>
+    <button class="category-btn" onclick="fetchCategory('romance')">Romance</button>
+    <button class="category-btn" onclick="fetchCategory('fantasy')">Fantasy</button>
+    <button class="category-btn" onclick="fetchCategory('biography')">Biography</button>
+    <button class="category-btn" onclick="fetchCategory('business')">Business</button>
+    <button class="category-btn" onclick="fetchCategory('self-help')">Self-Help</button>
+    <button class="category-btn" onclick="fetchCategory('comedy')">comedy</button>
+    <button class="category-btn" onclick="fetchCategory('comics')">Comics</button>
+
+    <div class="book-container" id="book-list"></div>
+
+    <script>
+        const API_KEY = "AIzaSyCb9wYgipqc-0oH64vlI0L5ajM-i-6Zw0U";
+        async function fetchBooks(query) {
+            
+            if (!query) {
+                query = document.querySelector('#search').value ?document.querySelector('#search').value : "Harry potter" ; // Get latest input value // Prevent empty searches
+            }
+            console.log(query)
+            const url = `https://www.googleapis.com/books/v1/volumes?q=${query}&key=${API_KEY}`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Failed to fetch");
+                const data = await response.json();
+
+                displayBooks(data.items);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        function fetchCategory(category) {
+            console.log(category)
+            fetchBooks(`subject:${category}`);
+        }
+
+        function displayBooks(books) {
+            const bookList = document.getElementById("book-list");
+            bookList.innerHTML = "";  // Clear previous results
+
+            books = books.filter(b =>{
+                return b.volumeInfo.imageLinks
+            })
+            
+            books.forEach(book => {
+                const info = book.volumeInfo;
+                const title = info.title || "No Title";
+                const author = info.authors ? info.authors.join(", ") : "Unknown Author";
+                const thumbnail = info.imageLinks.thumbnail;
+
+                const bookCard = `
+                    <div class="book-card">
+                        <a href="/book/${book.id}/">
+                            <img src="${thumbnail}" alt="${title}">
+                            <h3>${title}</h3>
+                            <p><strong>Author:</strong> ${author}</p>
+                        </a>
+                    </div>
+                `;
+
+                bookList.innerHTML += bookCard;
+            });
+        }
+
+        // Fetch default books on page load
+        fetchBooks();
+    </script>
+
+
+{% endblock %}

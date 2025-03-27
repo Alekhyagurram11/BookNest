@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% block content %}
+    <style>
+        .book-detail-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+        }
+        .book-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+            width: 100%;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            background: white;
+        }
+        .book-image img {
+            width: 250px;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-top: 50px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .book-details {
+            max-width: 500px;
+        }
+        .description {
+            margin-top: 10px;
+        }
+        .add-to-cart-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .reviews-section {
+            width: 100%;
+            margin-top: 30px;
+            text-align: left;
+        }
+        .review {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .review-form {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f4f4f4;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .submit-review-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="book-detail-container">
+        <div class="book-info">
+            <div class="book-image">
+                <img src="{% if book.cover_image %}{{ book.cover_image.url }}{% elif book.imageLinks.thumbnail %}{{ book.imageLinks.thumbnail }}{% else %}https://via.placeholder.com/250x350{% endif %}" 
+                     alt="{{ book.title }}">
+            </div>
+
+            <div class="book-details">
+                <h1>{{ book.title }}</h1>
+                <p class="author">By {% if book.author %}{{ book.author.username }}{% elif book.authors %}{{ book.authors|join:", " }}{% else %}Unknown Author{% endif %}</p>
+                <p class="price">₹{% if book.price %}{{ book.price }}{% else %}149.99{% endif %}</p>
+                <p class="rating">Rating: {% if book.rating %}{{ book.rating }} / 5{% else %}3.5/5{% endif %}</p>
+                <p class="category">Category: {% if book.category %}{{ book.category }}{% elif book.categories %}{{ book.categories|join:", " }}{% else %}Not Specified{% endif %}</p>
+                <p class="published">Published: {% if book.published_date %}{{ book.published_date|date:"F d, Y" }}{% elif book.publishedDate %}{{ book.publishedDate }}{% else %}Unknown{% endif %}</p>
+                
+                <div class="description">
+                    <h3>Description</h3>
+                    <p>{% if book.description %}{{ book.description }}{% else %}No description available.{% endif %}</p>
+                </div>
+                <form method="post" action="{% url 'add_to_cart' book_id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+                </form>
+                
+                {% if messages %}
+                    <div>
+                        {% for message in messages %}
+                            <p style="color: green;">{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+            </div>
+        </div>
+
+        <div class="reviews-section">
+            <h2>Reviews</h2>
+            {% for review in reviews %}
+                <div class="review">
+                    <p><strong>{{ review.user.username }}</strong> - {{ review.rating }}/5</p>
+                    <p>{{ review.comment }}</p>
+                    <p class="review-date">{{ review.created_at|date:"F d, Y" }}</p>
+                </div>
+            {% empty %}
+                <p>No reviews yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function getCSRFToken() {
+    return document.getElementById("csrf-token").value;
+}
+
+        function addToCart(bookId) {
+            console.log("Book ID being sent:", bookId);  // Debugging
+            fetch(`/cart/add/${bookId}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": getCSRFToken(),
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ book_id: bookId }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Server Response:", data);  // Debugging
+                if (data.error) {
+                    alert("Error: " + data.error);
+                } else {
+                    alert("Book added to cart!");
+                }
+            })
+            .catch(error => console.error("Fetch Error:", error));
+        }
+
+    </script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Order Tracking</h2>
+    <div class="order-details">
+        <p>Order ID: {{ order.id }}</p>
+        <p>Total Amount: ₹{{ order.total_amount }}</p>
+        <p>Status: {{ order.status }}</p>
+        {% if order.tracking_number %}
+            <p>Tracking Number: {{ order.tracking_number }}</p>
+        {% endif %}
+        <p>Ordered on: {{ order.created_at }}</p>
+    </div>
+    <div class="order-items">
+        <h3>Order Items</h3>
+        <table border="1">
+            <tr>
+                <th>Book</th>
+                <th>Price</th>
+                <th>Quantity</th>
+               
+            </tr>
+            {% for item in order.order_items.all %}
+            <tr>
+                <td>{{ item.book.title }}</td>
+                <td>₹{{ item.book.price }}</td>
+                <td>{{ item.quantity }}</td>
+                
+            </tr>
+            {% endfor %}
+        </table>
+        <h2>Total: ₹{{ order.total_amount }}</h2>
+{% endblock %}

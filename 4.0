@@ -1,0 +1,12 @@
+Collecting Django
+  Using cached Django-5.1.7-py3-none-any.whl (8.3 MB)
+Collecting asgiref<4,>=3.8.1
+  Downloading asgiref-3.8.1-py3-none-any.whl (23 kB)
+Collecting sqlparse>=0.3.1
+  Downloading sqlparse-0.5.3-py3-none-any.whl (44 kB)
+     ---------------------------------------- 44.4/44.4 kB ? eta 0:00:00
+Collecting tzdata
+  Downloading tzdata-2025.2-py2.py3-none-any.whl (347 kB)
+     -------------------------------------- 347.8/347.8 kB 3.1 MB/s eta 0:00:00
+Installing collected packages: tzdata, sqlparse, asgiref, Django
+Successfully installed Django-5.1.7 asgiref-3.8.1 sqlparse-0.5.3 tzdata-2025.2

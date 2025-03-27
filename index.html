@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="hero">
+    <h1>Discover Your Next Favorite Book</h1>
+    <p>Explore a wide range of books, read reviews, and build your personal library with BookNest!</p>
+    
+    <buuton><a href="{% url 'browse' %}">Browse Books</a></buuton>
+</div>
+<div class="container">
+
+    
+    <div class="trending-books">
+        <h2>Trending Books</h2>
+        <div class="book-list">
+            {% for book in trending_books %}
+            <div class="book-card">
+                {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
+                {% elif book.cover_image_url %}
+                <img src="{{ book.cover_image_url }}" alt="{{ book.title }}">
+                {% else %}
+                <img src="https://via.placeholder.com/150" alt="No Image">
+                {% endif %}
+                <h3>{{ book.title }}</h3>
+                <p>By {{ book.author }}</p>
+                <p>Category:
+                    {{ trending_books.0.category }}
+                </p>
+                <p>Rating: {{ book.rating }} / 5</p>
+                <p>₹{{ book.price }}</p>
+                    
+            </div>
+            {% empty %}
+            <p>No trending books available.</p>
+            {% endfor %}
+        </div>
+    </div>
+        
+</div>
+{% endblock %}
+

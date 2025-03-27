@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Author Dashboard</h2>
+    <div class="dashboard-container">
+        <section class="publish-section">
+            <h3>Publish a New Book</h3>
+            <form method="post" enctype="multipart/form-data" class="publish-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="title">Book Title:</label>
+                    <input type="text" name="title" id="title" placeholder="Enter book title" required>
+                </div>
+                <div class="form-group">
+                    <label for="isbn">ISBN:</label>
+                    <input type="text" name="isbn" id="isbn" placeholder="Enter ISBN" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price (₹):</label>
+                    <input type="number" name="price" id="price" placeholder="Enter price" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <input type="text" name="category" id="category" placeholder="Enter category" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea name="description" id="description" placeholder="Enter description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="cover_image">Cover Image:</label>
+                    <input type="file" name="cover_image" id="cover_image">
+                </div>
+                <button type="submit" class="publish-btn">Publish Book</button>
+            </form>
+        </section>
+        <section class="books-section">
+            <h3>Your Books</h3>
+            <div class="book-list">
+                {% for book in books %}
+                    <div class="book-card">
+                        <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
+                        <h3>{{ book.title }}</h3>
+                        <p>Price: ₹{{ book.price }}</p>
+                        <p>Category: {{ book.category }}</p>
+                        <p>Published: {{ book.published_date|date:"F d, Y" }}</p>
+                    </div>
+                {% empty %}
+                    <p>No books published yet.</p>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+{% endblock %}

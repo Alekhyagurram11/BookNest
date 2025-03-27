@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2>Welcome, Author {{ user.username }}!</h2>
+    <div class="account-details">
+        <h3>Your Profile</h3>
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Phone Number:</strong> {{ user.profile.phone_number }}</p>
+    </div>
+
+    <div class="authored-books">
+        <h3>Your Books</h3>
+        {% if books %}
+        <div class="book-published">
+            {% for book in books %}
+            <div class="book-card">
+                {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
+                {% else %}
+                <img src="https://via.placeholder.com/150" alt="No Image">
+                {% endif %}
+                <h3>{{ book.title }}</h3>
+                <p>Rating: {{ book.rating }} / 5</p>
+                <p>₹{{ book.price }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>You have not authored any books yet.</p>
+        {% endif %}
+    </div>
+    <button class="publish">+ Publish</button>
+
+</div>
+{% endblock %}

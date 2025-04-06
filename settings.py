@@ -3,7 +3,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'TDUXnY_tb2xO1i3jdhT_w0Y4wQQzDyOHsH8VzIbbEBPBNth5TBJgiSTY5nAgdQYdaIw'  # Replace with a secure key
+SECRET_KEY = ''  # Replace with a secure key
 DEBUG = True
 ALLOWED_HOSTS = []
 
